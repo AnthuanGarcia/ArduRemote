@@ -1,4 +1,5 @@
 //import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:integradora/src/models/user.dart';
 import 'package:integradora/src/pages/menu.dart';
@@ -35,14 +36,15 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
 
-                await Authentication.signInWithGoogle(context: context);
+                User use =
+                    await Authentication.signInWithGoogle(context: context);
 
                 setState(() {
                   _isSigningIn = false;
                 });
 
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => MenuPage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => MenuPage(name: use)));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),

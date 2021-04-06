@@ -62,8 +62,8 @@ class _CardInfoState extends State<CardInfo>
   @override
   Widget build(BuildContext context) {
     final TextStyle style = Theme.of(context).textTheme.title.copyWith(
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
+          fontSize: 24,
+          fontWeight: FontWeight.normal,
         );
     return Scaffold(
       extendBodyBehindAppBar: true,

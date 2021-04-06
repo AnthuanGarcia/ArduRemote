@@ -40,10 +40,14 @@ class _DevicePageState extends State<DevicePage> {
   String _tagTitle;
   String _titulo;
 
-  bool _isSigningOut = false;
+  //bool _isSigningOut = false;
   bool swipe = false;
   int sensivity = 8;
   int lastChange = 0;
+
+  bool change = false;
+
+  ScrollController _controller;
 
   final String assetName = "assets/svg/Tv.svg";
 
@@ -58,7 +62,19 @@ class _DevicePageState extends State<DevicePage> {
 
     lastChange = _user.devices[_tipo].length;
 
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
+
     super.initState();
+  }
+
+  _scrollListener() {
+    if (_controller.offset <= _controller.position.minScrollExtent &&
+        !_controller.position.outOfRange) {
+      setState(() => {change = false});
+    } else {
+      setState(() => {change = true});
+    }
   }
 
   Route _routeToTvPage(dynamic selectv) {
@@ -82,38 +98,10 @@ class _DevicePageState extends State<DevicePage> {
     );
   }
 
-  Route _routeCardInfoPage() {
-    return PageRouteBuilder(
-      opaque: false,
-      transitionDuration: Duration(milliseconds: 800),
-      reverseTransitionDuration: Duration(milliseconds: 500),
-      pageBuilder: (context, animation, secondaryAnimation) => CardInfo(
-        usuario: _user,
-        tipo: _tipo,
-        titulo: _titulo,
-        tagTitulo: _tagTitle,
-        callback: (val) => setState(() => lastChange = val),
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final TextStyle style = Theme.of(context).textTheme.title.copyWith(
-          fontSize: 32,
+          fontSize: 40,
           fontWeight: FontWeight.bold,
         );
 
@@ -163,17 +151,179 @@ class _DevicePageState extends State<DevicePage> {
       ),*/
       body: Center(
         child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: <Color>[Color(0xFFFEFFFF), Color(0xFFbcd7f2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                Color(0x66FFB7B2),
+                Color(0x6602FFC2),
+              ],
             ),
           ),
           child: Stack(
-            alignment: AlignmentDirectional.bottomCenter,
+            alignment: AlignmentDirectional.topCenter,
             children: [
-              ListView.builder(
+              Positioned(
+                child: Hero(
+                  tag: 'Background',
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                    margin: EdgeInsets.all(0),
+                    padding: EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/tv-banner.png'),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                child: Hero(
+                  tag: 'Degra',
+                  child: GestureDetector(
+                    onVerticalDragUpdate: (details) {
+                      if (details.delta.dy > -sensivity)
+                        Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: <Color>[
+                              Color(0x77FFB7B2),
+                              Color(0x7702FFC2),
+                            ]),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              /*AnimatedContainer(
+                width: change ? MediaQuery.of(context).size.width : 250,
+                height: change ? MediaQuery.of(context).size.height : 400,
+                margin: EdgeInsets.only(
+                  top: change ? 0 : 170,
+                  bottom: 0,
+                ),
+                duration: Duration(milliseconds: 600),
+                child:*/
+              Hero(
+                tag: _tagTitle,
+                child: Card(
+                  margin: EdgeInsets.all(0),
+                  color: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  child: AnimatedContainer(
+                    width: change ? MediaQuery.of(context).size.width : 250,
+                    height: change ? MediaQuery.of(context).size.height : 400,
+                    margin: EdgeInsets.only(
+                      top: change ? 0 : 170,
+                      bottom: 0,
+                    ),
+                    duration: Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.15),
+                          blurRadius: 10,
+                          offset: Offset(2, 6),
+                        )
+                      ],
+                    ),
+                    child: SingleChildScrollView(
+                      controller: _controller,
+                      child: Column(
+                        children: [
+                          Container(
+                            child: ListTile(
+                              title: Text(
+                                _titulo,
+                                textAlign: TextAlign.left,
+                                style: style,
+                              ),
+                            ),
+                          ),
+                          for (int idx = 0;
+                              idx < _user.devices[_tipo].length;
+                              idx++)
+                            Wrap(
+                              direction: Axis.horizontal,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(_routeToTvPage(
+                                        _user.devices[_tipo][idx]));
+                                  },
+                                  child: Container(
+                                    width: 200,
+                                    height: 80,
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10,
+                                      right: 10,
+                                      left: 0,
+                                    ),
+                                    padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      bottom: 10,
+                                      right: 10,
+                                      left: 0,
+                                    ),
+                                    child: Wrap(
+                                      direction: Axis.horizontal,
+                                      children: <Widget>[
+                                        SvgPicture.asset(
+                                          assetName,
+                                          alignment: Alignment.centerLeft,
+                                          height: 50,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          "${_user.devices[_tipo][idx]["Name"]}\nMarca\n${_user.devices[_tipo][idx]["Numbers"].length == 0 ? "Sin Numeros" : "Numeros"}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                  ), /*Row(
+                        children: [
+                          ListTile(
+                            title: Text(
+                              'Tv',
+                              textAlign: TextAlign.left,
+                              style: style,
+                            ),
+                          ),
+                          
+                        ],
+                      ),*/
+                ),
+              ),
+              //),
+              /*ListView.builder(
                 itemCount: lastChange =
                     lastChange == _user.devices[_tipo].length
                         ? lastChange
@@ -223,7 +373,7 @@ class _DevicePageState extends State<DevicePage> {
                   ),
                   //onTap: ,
                 ),
-              ),
+              ),*/
               /*AnimatedPositioned(
               height: swipe ? MediaQuery.of(context).size.height : 200.0,
               width: MediaQuery.of(context).size.width,
@@ -381,7 +531,7 @@ class _DevicePageState extends State<DevicePage> {
         tagTitle: _tagTitle,
         titulo: _titulo,
       ),*/
-      bottomNavigationBar: PreferredSize(
+      /*bottomNavigationBar: PreferredSize(
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
             if (details.delta.dy < sensivity)
@@ -417,7 +567,7 @@ class _DevicePageState extends State<DevicePage> {
           ),
         ),
         preferredSize: Size(MediaQuery.of(context).size.width, 100),
-      ),
+      ),*/
       /*bottomNavigationBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 75),
         child: Stack(
