@@ -31,6 +31,8 @@ class _MenuPageState extends State<MenuPage> {
 
   int lastChange = 0;
 
+  List<Widget> menuCards;
+
   set total(int all) => setState(() => lastChange = all);
 
   void joda() async {
@@ -97,7 +99,64 @@ class _MenuPageState extends State<MenuPage> {
           child: Text('Bienvenido, ${_name.displayName}'),
         ),
       ),
-      body: _Menu(user: _user),
+      body: Stack(
+        children: [
+          Positioned(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[Color(0xFFF2F5F8), Color(0xFFd0d6e0)],
+                  /*colors: <Color>[
+              Color(0xFFD3F5CF),
+              Color(0xFFA8DBFA),
+              Color(0xFF635EE2)
+            ],*/
+                ),
+              ),
+            ),
+          ),
+          ListView.builder(
+            itemCount: 2,
+            scrollDirection: Axis.horizontal,
+            physics: PageScrollPhysics(parent: BouncingScrollPhysics()),
+            itemBuilder: (context, idx) {
+              menuCards = [
+                _Menu(
+                  user: _user,
+                  titulo: 'Tv',
+                  tagtitulo: 'tv-title',
+                  type: 'Tv',
+                  banner: 'tv-back',
+                  degra: 'tv-degra',
+                  assetName: 'assets/tv-banner.png',
+                  colors: [
+                    Color(0x66FFB7B2),
+                    Color(0x6602FFC2),
+                  ],
+                ),
+                _Menu(
+                  user: _user,
+                  titulo: 'Reproductor',
+                  tagtitulo: 'media-title',
+                  type: 'Media', // CAMBIAR
+                  banner: 'media-back',
+                  degra: 'media-degra',
+                  assetName: 'assets/media-banner.png',
+                  colors: [
+                    Color(0x66B2FFFA),
+                    Color(0x662602FF),
+                  ],
+                )
+              ];
+              return menuCards[idx];
+            },
+          )
+        ],
+      ),
       bottomNavigationBar: PreferredSize(
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
@@ -152,14 +211,28 @@ class _Menu extends StatelessWidget {
   Usuario user;
   String titulo;
   String type;
-  String tagType;
+  String tagtitulo;
+  String banner;
+  String degra;
+  String assetName;
+  List<Color> colors;
 
-  _Menu({Key key, this.user}) : super(key: key);
+  _Menu(
+      {Key key,
+      @required this.user,
+      @required this.titulo,
+      @required this.type,
+      @required this.tagtitulo,
+      @required this.banner,
+      @required this.degra,
+      @required this.assetName,
+      @required this.colors})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final TextStyle style = Theme.of(context).textTheme.title.copyWith(
-          fontSize: 36,
+          fontSize: 32,
           fontWeight: FontWeight.bold,
         );
 
@@ -172,8 +245,12 @@ class _Menu extends StatelessWidget {
             return DevicePage(
               usuario: user,
               tipo: type,
-              tagTitulo: tagType,
+              tagTitulo: tagtitulo,
               titulo: titulo,
+              tagBack: banner,
+              tagDegra: degra,
+              assetName: assetName,
+              colors: colors,
             );
           },
           transitionsBuilder: (BuildContext context,
@@ -191,7 +268,7 @@ class _Menu extends StatelessWidget {
       );
     }
 
-    return Center(
+    return /*Center(
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -207,101 +284,92 @@ class _Menu extends StatelessWidget {
             ],*/
           ),
         ),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.only(top: 40),
-            padding:
-                EdgeInsets.only(top: 20.0, bottom: 20, right: 20, left: 20),
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  child: Hero(
-                    tag: 'Background',
+        child: */
+        Center(
+      child: GestureDetector(
+        onTap: () => _transition(),
+        child: Container(
+          margin: EdgeInsets.only(top: 40, right: 30, left: 30),
+          padding: EdgeInsets.all(25),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                child: Hero(
+                  tag: banner,
+                  child: Container(
+                    width: 250,
+                    height: 210,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(assetName),
+                        fit: BoxFit.fill,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                child: Hero(
+                  tag: degra,
+                  child: Container(
+                    width: 250,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: colors),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                child: Hero(
+                  tag: tagtitulo,
+                  child: Card(
+                    margin: EdgeInsets.all(0),
+                    color: Colors.transparent,
+                    shadowColor: Colors.transparent,
                     child: Container(
                       width: 250,
-                      height: 210,
+                      height: 150,
+                      margin: EdgeInsets.only(
+                        top: 170,
+                        bottom: 10,
+                      ),
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/tv-banner.png'),
-                          fit: BoxFit.fill,
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.20),
+                            blurRadius: 16,
+                            offset: Offset(3, 6),
+                          )
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          titulo,
+                          textAlign: TextAlign.left,
+                          style: style,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        contentPadding: EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        subtitle: Text(
+                            'Dispositivos: ${user.devices[type].length}\nFavoritos: ${user.favorites.length}'),
                       ),
                     ),
                   ),
                 ),
-                Positioned(
-                  child: Hero(
-                    tag: 'Degra',
-                    child: Container(
-                      width: 250,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: <Color>[
-                              Color(0x77FFB7B2),
-                              Color(0x7702FFC2),
-                            ]),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  child: Hero(
-                    tag: 'Titulo',
-                    child: Card(
-                      margin: EdgeInsets.all(0),
-                      color: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 250,
-                          height: 150,
-                          margin: EdgeInsets.only(
-                            top: 170,
-                            bottom: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.15),
-                                blurRadius: 10,
-                                offset: Offset(2, 6),
-                              )
-                            ],
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              'Tv',
-                              textAlign: TextAlign.left,
-                              style: style,
-                            ),
-                            contentPadding: EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            subtitle: Text(
-                                'Dispositivos: ${user.devices["Tv"].length}\nFavoritos: ${user.favorites.length}'),
-                            onTap: () => {
-                              titulo = 'Tv',
-                              type = 'Tv',
-                              tagType = 'Titulo',
-                              _transition()
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-                /*Hero(
+              )
+              /*Hero(
                 tag: 'Titulo',
                 child: Card(
                   child: GestureDetector(
@@ -427,8 +495,7 @@ class _Menu extends StatelessWidget {
                   )
                 ],
               )*/
-              ],
-            ),
+            ],
           ),
         ),
       ),

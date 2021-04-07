@@ -15,23 +15,36 @@ import 'package:integradora/src/models/user.dart';
 
 class DevicePage extends StatefulWidget {
   DevicePage(
-      {Key key, Usuario usuario, String titulo, String tagTitulo, String tipo})
+      {Key key,
+      Usuario usuario,
+      String titulo,
+      String tagTitulo,
+      String tipo,
+      String tagDegra,
+      String tagBack,
+      String assetName,
+      List<Color> colors})
       : _user = usuario,
         _tipo = tipo,
         _tagTitle = tagTitulo,
         _titulo = titulo,
+        _tagBack = tagBack,
+        _tagDegra = tagDegra,
+        _assetName = assetName,
+        _colors = colors,
         super(key: key);
 
   final Usuario _user;
   final String _tipo;
   final String _tagTitle;
   final String _titulo;
+  final String _tagDegra;
+  final String _tagBack;
+  final String _assetName;
+  final List<Color> _colors;
 
   @override
   _DevicePageState createState() => _DevicePageState();
-
-  static _DevicePageState of(BuildContext context) =>
-      context.findAncestorStateOfType<_DevicePageState>();
 }
 
 class _DevicePageState extends State<DevicePage> {
@@ -39,19 +52,28 @@ class _DevicePageState extends State<DevicePage> {
   String _tipo;
   String _tagTitle;
   String _titulo;
+  String _tagDegra;
+  String _tagBack;
+  String _assetName;
+  List<Color> _colors;
 
   //bool _isSigningOut = false;
   bool swipe = false;
   int sensivity = 8;
-  int lastChange = 0;
+  //int lastChange = 0;
 
   bool change = false;
 
   ScrollController _controller;
 
-  final String assetName = "assets/svg/Tv.svg";
+  Map<String, String> icons = {
+    'Tv': "assets/svg/Tv.svg",
+    'Media': "assets/svg/media-play.svg"
+  };
 
-  set total(int all) => setState(() => lastChange = all);
+  String iconList;
+
+  // set total(int all) => setState(() => lastChange = all);
 
   @override
   void initState() {
@@ -59,8 +81,13 @@ class _DevicePageState extends State<DevicePage> {
     _tipo = widget._tipo;
     _tagTitle = widget._tagTitle;
     _titulo = widget._titulo;
+    _tagDegra = widget._tagDegra;
+    _tagBack = widget._tagBack;
+    _assetName = widget._assetName;
+    _colors = widget._colors;
 
-    lastChange = _user.devices[_tipo].length;
+    //lastChange = _user.devices[_tipo].length;
+    iconList = icons[_tipo];
 
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
@@ -101,7 +128,7 @@ class _DevicePageState extends State<DevicePage> {
   @override
   Widget build(BuildContext context) {
     final TextStyle style = Theme.of(context).textTheme.title.copyWith(
-          fontSize: 40,
+          fontSize: 34,
           fontWeight: FontWeight.bold,
         );
 
@@ -153,14 +180,13 @@ class _DevicePageState extends State<DevicePage> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
+          margin: EdgeInsets.all(0),
+          padding: EdgeInsets.all(0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: <Color>[
-                Color(0x66FFB7B2),
-                Color(0x6602FFC2),
-              ],
+              colors: _colors,
             ),
           ),
           child: Stack(
@@ -168,15 +194,13 @@ class _DevicePageState extends State<DevicePage> {
             children: [
               Positioned(
                 child: Hero(
-                  tag: 'Background',
+                  tag: _tagBack,
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 300,
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    height: 288,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/tv-banner.png'),
+                        image: AssetImage(_assetName),
                       ),
                     ),
                   ),
@@ -184,7 +208,7 @@ class _DevicePageState extends State<DevicePage> {
               ),
               Positioned(
                 child: Hero(
-                  tag: 'Degra',
+                  tag: _tagDegra,
                   child: GestureDetector(
                     onVerticalDragUpdate: (details) {
                       if (details.delta.dy > -sensivity)
@@ -192,15 +216,12 @@ class _DevicePageState extends State<DevicePage> {
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 300,
+                      height: 290,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: <Color>[
-                              Color(0x77FFB7B2),
-                              Color(0x7702FFC2),
-                            ]),
+                            colors: _colors),
                       ),
                     ),
                   ),
@@ -235,9 +256,9 @@ class _DevicePageState extends State<DevicePage> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.15),
-                          blurRadius: 10,
-                          offset: Offset(2, 6),
+                          color: Color.fromRGBO(0, 0, 0, 0.20),
+                          blurRadius: 16,
+                          offset: Offset(3, 6),
                         )
                       ],
                     ),
@@ -281,17 +302,17 @@ class _DevicePageState extends State<DevicePage> {
                                       right: 10,
                                       left: 0,
                                     ),
-                                    child: Wrap(
-                                      direction: Axis.horizontal,
+                                    child: Row(
+                                      //direction: Axis.horizontal,
                                       children: <Widget>[
                                         SvgPicture.asset(
-                                          assetName,
+                                          iconList,
                                           alignment: Alignment.centerLeft,
                                           height: 50,
                                         ),
                                         SizedBox(width: 8),
                                         Text(
-                                          "${_user.devices[_tipo][idx]["Name"]}\nMarca\n${_user.devices[_tipo][idx]["Numbers"].length == 0 ? "Sin Numeros" : "Numeros"}",
+                                          "${_user.devices[_tipo][idx]["Name"]}\nMarca",
                                           style: TextStyle(
                                             fontSize: 14,
                                           ),
@@ -625,7 +646,7 @@ class _DevicePageState extends State<DevicePage> {
   }
 }
 
-class ListViewDevices extends StatelessWidget {
+/*class ListViewDevices extends StatelessWidget {
   final dynamic devs;
   final String tipo;
   final String tagTitle;
@@ -773,4 +794,4 @@ class ListViewDevices extends StatelessWidget {
       ),
     );
   }
-}
+}*/

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class FavoritesPage extends StatefulWidget {
   final List<dynamic> _favs;
@@ -23,6 +24,15 @@ class _FavoritePageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Hola Favs $favs');
+    return Column(
+      children: [
+        SizedBox(height: 200, width: 1),
+        Container(
+          width: 550,
+          height: 100,
+          decoration: BoxDecoration(color: Colors.red),
+        )
+      ],
+    );
   }
 }

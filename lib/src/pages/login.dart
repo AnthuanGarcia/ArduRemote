@@ -41,20 +41,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),*/
                     SizedBox(height: 20),
-                    Text(
-                      'FlutterFire',
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                        fontSize: 40,
-                      ),
-                    ),
-                    Text(
-                      'Authentication',
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 40,
-                      ),
-                    ),
                   ],
                 ),
               ),

@@ -66,30 +66,44 @@ class _CardInfoState extends State<CardInfo>
           fontWeight: FontWeight.normal,
         );
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      //extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
-            if (details.delta.dy > -sensivity) print('Abajo?');
-            Navigator.of(context).pop();
+            if (details.delta.dy > -sensivity) Navigator.of(context).pop();
           },
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: 110,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(0, 0, 0, 0),
+            height: 80,
+            margin: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(
+              top: 15,
+              left: 15,
+              right: 15,
+              bottom: 15,
             ),
-            child: Hero(
-              tag: _tagTitle,
-              child: Text(
-                _title,
-                style: style,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+                child: Container(
+                  //padding: EdgeInsets.only(
+                  //    left: 20.0, right: 20, top: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: Hero(
+                    tag: _tagTitle,
+                    child: Text(
+                      _title,
+                      style: style,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
-        preferredSize: Size(MediaQuery.of(context).size.width, 110),
+        preferredSize: Size(MediaQuery.of(context).size.width, 90),
       ),
       backgroundColor: Colors.transparent,
       body: Container(
@@ -97,48 +111,145 @@ class _CardInfoState extends State<CardInfo>
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
             child: Container(
-              //height: MediaQuery.of(context).size.height,
-              //width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Color.fromRGBO(0, 0, 0, 0),
               ),
-              child: Stack(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListView.builder(
-                    itemCount: _user.devices[_tipo].length,
-                    itemBuilder: (context, idx) => Dismissible(
-                      key: Key(_user.devices[_tipo][idx]["Name"]),
-                      onDismissed: (direction) {
-                        setState(() {
-                          print(_user.devices[_tipo].length);
-                          _callback(_user.devices[_tipo].length);
-                          _user.devices[_tipo].removeAt(idx);
-                          // *****************************
-                          //  PETICION PARA ELIMINAR AQUI
-                          // *****************************
-                          // ->
-                        });
-                      },
-                      background: Container(
-                        color: Color.fromRGBO(255, 0, 0, 0.15),
-                      ),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 80,
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              assetName,
-                              width: 60,
-                              alignment: Alignment.centerLeft,
-                            ),
-                            //ListTile(
-                            //title:
-                            SizedBox(width: 10),
-                            Text('${_user.devices[_tipo][idx]["Name"]}'),
-                          ],
+                  Container(
+                    padding:
+                        EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                    child: Text(
+                      "Tv",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Divider(
+                    height: 0,
+                    thickness: 1,
+                    indent: 5,
+                    endIndent: 5,
+                    color: Colors.black,
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: ListView.separated(
+                        itemCount: _user.devices[_tipo].length,
+                        physics: BouncingScrollPhysics(),
+                        separatorBuilder: (context, idx) => Divider(
+                          height: 0,
+                          thickness: 1,
+                          indent: 5,
+                          endIndent: 5,
+                          color: Colors.black,
                         ),
+                        itemBuilder: (context, idx) {
+                          return Dismissible(
+                            key: Key(_user.devices[_tipo][idx]["Name"]),
+                            onDismissed: (direction) {
+                              setState(() {
+                                _callback(_user.devices[_tipo].length);
+                                _user.devices[_tipo].removeAt(idx);
+                                // *****************************
+                                //  PETICION PARA ELIMINAR AQUI
+                                // *****************************
+                                // ->
+                              });
+                            },
+                            background: Container(
+                              color: Color.fromRGBO(255, 0, 0, 0.15),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 80,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    assetName,
+                                    width: 60,
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('${_user.devices[_tipo][idx]["Name"]}',
+                                      style: TextStyle(fontSize: 16)),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                    child: Text(
+                      "Media",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Divider(
+                    height: 0,
+                    thickness: 1,
+                    indent: 5,
+                    endIndent: 5,
+                    color: Colors.black,
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: ListView.separated(
+                        itemCount: _user.devices['Media'].length,
+                        physics: BouncingScrollPhysics(),
+                        separatorBuilder: (context, idx) => Divider(
+                          height: 0,
+                          thickness: 1,
+                          indent: 5,
+                          endIndent: 5,
+                          color: Colors.black,
+                        ),
+                        itemBuilder: (context, idx) {
+                          return Dismissible(
+                            key: Key(_user.devices['Media'][idx]["Name"]),
+                            onDismissed: (direction) {
+                              setState(() {
+                                _callback(_user.devices['Media'].length);
+                                _user.devices['Media'].removeAt(idx);
+                                // *****************************
+                                //  PETICION PARA ELIMINAR AQUI
+                                // *****************************
+                                // ->
+                              });
+                            },
+                            background: Container(
+                              color: Color.fromRGBO(255, 0, 0, 0.15),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 80,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/media-play.svg',
+                                    width: 60,
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('${_user.devices['Media'][idx]["Name"]}',
+                                      style: TextStyle(fontSize: 16)),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

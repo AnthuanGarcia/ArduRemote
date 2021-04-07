@@ -160,6 +160,7 @@ class _TvControlPageState extends State<TvControlPage> {
       ),
       body: Center(
         child: Container(
+          color: Colors.transparent,
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).size.width / 7,
             bottom: 15,
