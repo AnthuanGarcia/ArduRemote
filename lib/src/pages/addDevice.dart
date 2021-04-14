@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +76,6 @@ class _NewDeviceState extends State<NewDevicePage> {
     addDev = widget._callback;
     success = List.filled(commandsTv.length, false);
     oversized = List.filled(commandsTv.length, false);
-    // TODO: implement initState
     super.initState();
   }
 

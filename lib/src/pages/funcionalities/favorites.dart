@@ -25,7 +25,6 @@ class _FavoritePageState extends State<FavoritesPage> {
   @override
   void initState() {
     favs = widget._favs;
-    // TODO: implement initState
     super.initState();
   }
 

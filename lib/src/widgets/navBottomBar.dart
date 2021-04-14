@@ -30,7 +30,6 @@ class _NavBottomBarState extends State<NavBottomBar> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

@@ -43,7 +43,6 @@ class _SchedulePageState extends State<SchedulePage> {
     number = false;
     valid = false;
     feed = false;
-    // TODO: implement initState
     super.initState();
   }
 

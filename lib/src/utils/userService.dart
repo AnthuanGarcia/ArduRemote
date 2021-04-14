@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String URL = '192.168.1.106:3000';
 
-const Map<String, String> _headers = {'Content-Type': 'application/json'};
-
 Future<String> signin(String idToken) async {
   //final userremo = await SharedPreferences.getInstance();
 

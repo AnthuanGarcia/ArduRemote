@@ -1,14 +1,9 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:integradora/src/utils/gradients.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:integradora/src/pages/infoDevices.dart';
-import 'package:integradora/src/pages/login.dart';
-import 'package:integradora/src/pages/tvControl.dart';
 
 import 'package:integradora/src/pages/indexControl.dart';
 //import 'package:integradora/src/utils/authentication.dart';
@@ -30,9 +25,9 @@ class DevicePage extends StatefulWidget {
         _tipo = tipo,
         _tagTitle = tagTitulo,
         _titulo = titulo,
-        _tagBack = tagBack,
-        _tagDegra = tagDegra,
-        _assetName = assetName,
+        //_tagBack = tagBack,
+        ///_tagDegra = tagDegra,
+        //_assetName = assetName,
         _colors = colors,
         super(key: key);
 
@@ -40,9 +35,9 @@ class DevicePage extends StatefulWidget {
   final String _tipo;
   final String _tagTitle;
   final String _titulo;
-  final String _tagDegra;
-  final String _tagBack;
-  final String _assetName;
+  //final String _tagDegra;
+  //final String _tagBack;
+  //final String _assetName;
   final List<Color> _colors;
 
   @override
@@ -54,9 +49,9 @@ class _DevicePageState extends State<DevicePage> {
   String _tipo;
   String _tagTitle;
   String _titulo;
-  String _tagDegra;
-  String _tagBack;
-  String _assetName;
+  //String _tagDegra;
+  //String _tagBack;
+  //String _assetName;
   List<Color> _colors;
   List<int> idxRandGra;
 
@@ -85,9 +80,9 @@ class _DevicePageState extends State<DevicePage> {
     _tipo = widget._tipo;
     _tagTitle = widget._tagTitle;
     _titulo = widget._titulo;
-    _tagDegra = widget._tagDegra;
-    _tagBack = widget._tagBack;
-    _assetName = widget._assetName;
+    //_tagDegra = widget._tagDegra;
+    //_tagBack = widget._tagBack;
+    //_assetName = widget._assetName;
     _colors = widget._colors;
 
     //lastChange = _user.devices[_tipo].length;

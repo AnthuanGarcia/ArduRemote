@@ -7,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:integradora/src/models/user.dart';
 import 'package:integradora/src/pages/addDevice.dart';
-import 'package:integradora/src/pages/devices.dart';
 import 'package:integradora/src/utils/userService.dart';
 
 typedef void IntCallback(int val);
@@ -53,8 +52,6 @@ class _CardInfoState extends State<CardInfo>
 
   List<String> feedback;
 
-  var _dragoff;
-
   @override
   void initState() {
     _user = widget._user;
@@ -63,7 +60,6 @@ class _CardInfoState extends State<CardInfo>
     _tagTitle = widget._tagTitle;
     _callback = widget._callback;
 
-    // TODO: implement initState
     super.initState();
   }
 
