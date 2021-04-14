@@ -1,0 +1,25 @@
+{
+    "tagDevs": "Dispositivos",
+    "titleMedia": "Reproductor",
+
+    "msgMenu": "Bienvenido",
+    "tagFav": "Canales Favoritos",
+
+    "labelAdd": "Agregar",
+    "inputName": "Introduce un nombre",
+    "feedMsgAdd": "No haz introducido un nombre",
+    "btnForm": "Capturar",
+    "capturingDev": "Agregando Dispositivo",
+
+    "titleFav": "Favoritos",
+    "labelFav": "Ingresa un Canal",
+    "tagChannel": "Canales",
+    "btnFav": "Agregar Canal",
+    "feedMsgFav": "No haz ingresado un numero",
+
+    "titleSche": "Programar",
+    "checkChan": "Canal de encendido",
+    "btnSche": "Programar fecha",
+    "feedWrongSche": "Fecha invalida, introduce una fecha valida",
+    "feedGoodSche": "Fecha programada"
+}

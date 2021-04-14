@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:integradora/src/utils/userService.dart' as userService;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication {
   static Future<FirebaseApp> initializerFirebase({BuildContext context}) async {
@@ -15,6 +16,8 @@ class Authentication {
   static Future<User> signInWithGoogle({BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User user;
+
+    final usuario = await SharedPreferences.getInstance();
 
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -29,7 +32,9 @@ class Authentication {
         idToken: googleSignInAuthentication.idToken,
       );
 
-      userService.signin(googleSignInAuthentication.idToken);
+      String dataid =
+          await userService.signin(googleSignInAuthentication.idToken);
+      usuario.setString('user_remo', dataid);
 
       try {
         final UserCredential userCredential =

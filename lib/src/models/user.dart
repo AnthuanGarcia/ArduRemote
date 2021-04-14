@@ -1,5 +1,5 @@
 class Usuario {
-  final dynamic devices;
+  dynamic devices;
   final List<dynamic> favorites;
 
   Usuario({this.devices, this.favorites});

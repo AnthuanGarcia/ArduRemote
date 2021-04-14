@@ -5,6 +5,7 @@ import 'package:integradora/src/models/user.dart';
 import 'package:integradora/src/pages/menu.dart';
 
 import 'package:integradora/src/utils/authentication.dart';
+import 'package:integradora/src/utils/userService.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   @override
@@ -13,6 +14,10 @@ class GoogleSignInButton extends StatefulWidget {
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
+
+  getAllData() async {
+    return await getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +44,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 User use =
                     await Authentication.signInWithGoogle(context: context);
 
+                Usuario data = await getAllData();
+
                 setState(() {
                   _isSigningIn = false;
                 });
 
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MenuPage(name: use)));
+                    builder: (context) => MenuPage(name: use, data: data)));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),

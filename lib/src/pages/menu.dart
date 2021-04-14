@@ -4,16 +4,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:integradora/src/models/user.dart';
 import 'package:integradora/src/pages/devices.dart';
 import 'package:integradora/src/pages/infoDevices.dart';
 import 'package:integradora/src/utils/userService.dart';
 
+typedef void IntCallback(int val);
+
 class MenuPage extends StatefulWidget {
   User _name;
+  Usuario _data;
 
-  MenuPage({Key key, User name})
+  MenuPage({Key key, User name, Usuario data})
       : _name = name,
+        _data = data,
         super(key: key);
 
   @override
@@ -49,8 +54,12 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   void initState() {
-    joda();
+    //joda();
     _name = widget._name;
+    _user = widget._data;
+    _tipo = 'Tv';
+    _tagTitle = 'Titulo-devs';
+    lastChange = _user.devices[_tipo].length;
     super.initState();
   }
 
@@ -85,6 +94,7 @@ class _MenuPageState extends State<MenuPage> {
 //ProfilePage(usuario: user)
   @override
   Widget build(BuildContext context) {
+    _titulo = AppLocalizations.of(context).tagDevs;
     final TextStyle style = Theme.of(context).textTheme.title.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.normal,
@@ -93,10 +103,12 @@ class _MenuPageState extends State<MenuPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 75),
         child: Center(
-          child: Text('Bienvenido, ${_name.displayName}'),
+          child: Text(
+              '${AppLocalizations.of(context).msgMenu}, ${_name.displayName}'),
         ),
       ),
       body: Stack(
@@ -105,17 +117,19 @@ class _MenuPageState extends State<MenuPage> {
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.all(0),
+              margin: EdgeInsets.all(0),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[Color(0xFFF2F5F8), Color(0xFFd0d6e0)],
-                  /*colors: <Color>[
-              Color(0xFFD3F5CF),
-              Color(0xFFA8DBFA),
-              Color(0xFF635EE2)
-            ],*/
-                ),
+                color: Color(0xFFFFFFFF),
+                /*gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: <Color>[
+                    Color(0xFFFFD8F6),
+                    Color(0xFFD4D9FF),
+                  ],
+                  //<Color>[Color(0xFFF2F5F8), Color(0xFFd0d6e0)]
+                ),*/
               ),
             ),
           ),
@@ -132,20 +146,20 @@ class _MenuPageState extends State<MenuPage> {
                   type: 'Tv',
                   banner: 'tv-back',
                   degra: 'tv-degra',
-                  assetName: 'assets/tv-banner.png',
+                  assetName: 'assets/Tv.png',
                   colors: [
-                    Color(0x66FFB7B2),
-                    Color(0x6602FFC2),
+                    Color(0xEEFF84E3),
+                    Color(0xEEC2C9FF),
                   ],
                 ),
                 _Menu(
                   user: _user,
-                  titulo: 'Reproductor',
+                  titulo: AppLocalizations.of(context).titleMedia,
                   tagtitulo: 'media-title',
                   type: 'Media', // CAMBIAR
                   banner: 'media-back',
                   degra: 'media-degra',
-                  assetName: 'assets/media-banner.png',
+                  assetName: 'assets/media-play.png',
                   colors: [
                     Color(0x66B2FFFA),
                     Color(0x662602FF),
@@ -268,24 +282,7 @@ class _Menu extends StatelessWidget {
       );
     }
 
-    return /*Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[Color(0xFFF2F5F8), Color(0xFFd0d6e0)],
-            /*colors: <Color>[
-              Color(0xFFD3F5CF),
-              Color(0xFFA8DBFA),
-              Color(0xFF635EE2)
-            ],*/
-          ),
-        ),
-        child: */
-        Center(
+    return Center(
       child: GestureDetector(
         onTap: () => _transition(),
         child: Container(
@@ -293,7 +290,7 @@ class _Menu extends StatelessWidget {
           padding: EdgeInsets.all(25),
           child: Stack(
             children: <Widget>[
-              Positioned(
+              /*Positioned(
                 child: Hero(
                   tag: banner,
                   child: Container(
@@ -308,8 +305,8 @@ class _Menu extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-              Positioned(
+              ),*/
+              /*Positioned(
                 child: Hero(
                   tag: degra,
                   child: Container(
@@ -324,7 +321,7 @@ class _Menu extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ),*/
               Positioned(
                 child: Hero(
                   tag: tagtitulo,
@@ -334,41 +331,78 @@ class _Menu extends StatelessWidget {
                     shadowColor: Colors.transparent,
                     child: Container(
                       width: 250,
-                      height: 150,
+                      height: 230,
                       margin: EdgeInsets.only(
-                        top: 170,
+                        top: MediaQuery.of(context).size.width * .02,
                         bottom: 10,
                       ),
                       decoration: BoxDecoration(
                         color: Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(5),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.20),
-                            blurRadius: 16,
-                            offset: Offset(3, 6),
+                            blurRadius: 12,
+                            offset: Offset(4, 7),
                           )
                         ],
                       ),
-                      child: ListTile(
-                        title: Text(
-                          titulo,
-                          textAlign: TextAlign.left,
-                          style: style,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 100,
+                                  child: ListTile(
+                                    title: Text(
+                                      titulo,
+                                      textAlign: TextAlign.left,
+                                      style: style,
+                                    ),
+                                    contentPadding: EdgeInsets.only(
+                                      left: 10,
+                                      right: 10,
+                                      top: 0,
+                                      bottom: 0,
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Container(
+                                  width: 80,
+                                  height: 20,
+                                  margin: EdgeInsets.only(right: 10),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: colors),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  Text(
+                                      '${AppLocalizations.of(context).tagDevs}: ${user.devices[type].length}\n${AppLocalizations.of(context).tagFav}: ${user.favorites.length}'),
+                                  Spacer(),
+                                  Image.asset(assetName, height: 30)
+                                ],
+                              ),
+                            )
+                          ],
                         ),
-                        contentPadding: EdgeInsets.only(
-                          left: 20,
-                          right: 20,
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        subtitle: Text(
-                            'Dispositivos: ${user.devices[type].length}\nFavoritos: ${user.favorites.length}'),
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
               /*Hero(
                 tag: 'Titulo',
                 child: Card(

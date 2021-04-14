@@ -1,8 +1,10 @@
 //import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:integradora/src/utils/gradients.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:integradora/src/pages/infoDevices.dart';
 import 'package:integradora/src/pages/login.dart';
@@ -56,10 +58,12 @@ class _DevicePageState extends State<DevicePage> {
   String _tagBack;
   String _assetName;
   List<Color> _colors;
+  List<int> idxRandGra;
 
   //bool _isSigningOut = false;
   bool swipe = false;
   int sensivity = 8;
+  bool visible = false;
   //int lastChange = 0;
 
   bool change = false;
@@ -88,9 +92,13 @@ class _DevicePageState extends State<DevicePage> {
 
     //lastChange = _user.devices[_tipo].length;
     iconList = icons[_tipo];
+    visible = true;
 
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
+
+    idxRandGra = List.generate(_user.devices[_tipo].length,
+        (i) => Random().nextInt(RandGradient.randGradients.length));
 
     super.initState();
   }
@@ -104,11 +112,11 @@ class _DevicePageState extends State<DevicePage> {
     }
   }
 
-  Route _routeToTvPage(dynamic selectv) {
+  Route _routeToTvPage(dynamic selectv, List<Color> colors) {
     return PageRouteBuilder(
       transitionDuration: Duration(milliseconds: 800),
       pageBuilder: (context, animation, secondaryAnimation) =>
-          IndexControlPage(tv: selectv, favs: _user.favorites),
+          IndexControlPage(tv: selectv, favs: _user.favorites, colors: colors),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;
@@ -182,17 +190,17 @@ class _DevicePageState extends State<DevicePage> {
           height: MediaQuery.of(context).size.height,
           margin: EdgeInsets.all(0),
           padding: EdgeInsets.all(0),
-          decoration: BoxDecoration(
+          /*decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: _colors,
             ),
-          ),
+          ),*/
           child: Stack(
             alignment: AlignmentDirectional.topCenter,
             children: [
-              Positioned(
+              /*Positioned(
                 child: Hero(
                   tag: _tagBack,
                   child: Container(
@@ -205,8 +213,8 @@ class _DevicePageState extends State<DevicePage> {
                     ),
                   ),
                 ),
-              ),
-              Positioned(
+              ),*/
+              /*Positioned(
                 child: Hero(
                   tag: _tagDegra,
                   child: GestureDetector(
@@ -219,9 +227,33 @@ class _DevicePageState extends State<DevicePage> {
                       height: 290,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: _colors),
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: _colors,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),*/
+              Positioned(
+                child: AnimatedOpacity(
+                  opacity: visible ? 1.0 : 0,
+                  duration: Duration(milliseconds: 800),
+                  child: GestureDetector(
+                    onVerticalDragUpdate: (details) {
+                      if (details.delta.dy > -sensivity)
+                        Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: _colors,
+                        ),
                       ),
                     ),
                   ),
@@ -236,111 +268,162 @@ class _DevicePageState extends State<DevicePage> {
                 ),
                 duration: Duration(milliseconds: 600),
                 child:*/
-              Hero(
-                tag: _tagTitle,
-                child: Card(
-                  margin: EdgeInsets.all(0),
-                  color: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  child: AnimatedContainer(
-                    width: change ? MediaQuery.of(context).size.width : 250,
-                    height: change ? MediaQuery.of(context).size.height : 400,
-                    margin: EdgeInsets.only(
-                      top: change ? 0 : 170,
-                      bottom: 0,
-                    ),
-                    duration: Duration(milliseconds: 600),
-                    curve: Curves.easeInOut,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.20),
-                          blurRadius: 16,
-                          offset: Offset(3, 6),
-                        )
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      controller: _controller,
-                      child: Column(
-                        children: [
-                          Container(
-                            child: ListTile(
-                              title: Text(
-                                _titulo,
-                                textAlign: TextAlign.left,
-                                style: style,
-                              ),
-                            ),
-                          ),
-                          for (int idx = 0;
-                              idx < _user.devices[_tipo].length;
-                              idx++)
-                            Wrap(
-                              direction: Axis.horizontal,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(_routeToTvPage(
-                                        _user.devices[_tipo][idx]));
-                                  },
-                                  child: Container(
-                                    width: 200,
-                                    height: 80,
-                                    alignment: Alignment.centerLeft,
-                                    margin: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10,
-                                      right: 10,
-                                      left: 0,
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10,
-                                      right: 10,
-                                      left: 0,
-                                    ),
-                                    child: Row(
-                                      //direction: Axis.horizontal,
-                                      children: <Widget>[
-                                        SvgPicture.asset(
-                                          iconList,
-                                          alignment: Alignment.centerLeft,
-                                          height: 50,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          "${_user.devices[_tipo][idx]["Name"]}\nMarca",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+              Positioned(
+                child: Hero(
+                  tag: _tagTitle,
+                  child: Card(
+                    margin: EdgeInsets.all(0),
+                    color: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    child: AnimatedContainer(
+                      width: change ? MediaQuery.of(context).size.width : 250,
+                      height: change ? MediaQuery.of(context).size.height : 450,
+                      margin: EdgeInsets.only(
+                        top: change ? 0 : 90,
+                        bottom: 0,
+                      ),
+                      duration: Duration(milliseconds: 600),
+                      curve: Curves.easeInOut,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(change ? 0 : 5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.20),
+                            blurRadius: 18,
+                            offset: Offset(4, 8),
+                          )
                         ],
                       ),
-                    ),
-                  ), /*Row(
-                        children: [
-                          ListTile(
+                      child: GridView.builder(
+                          itemCount: _user.devices[_tipo].length + 1,
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                          ),
+                          //SingleChildScrollView(
+                          controller: _controller,
+                          itemBuilder: (context, idx) {
+                            if (idx == 0) {
+                              return Container(
+                                child: ListTile(
+                                  title: Text(
+                                    _titulo,
+                                    textAlign: TextAlign.left,
+                                    style: style,
+                                  ),
+                                ),
+                              );
+                            }
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(_routeToTvPage(
+                                    _user.devices[_tipo][idx - 1],
+                                    RandGradient
+                                        .randGradients[idxRandGra[idx - 1]]
+                                        .colors));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(15),
+                                margin: EdgeInsets.all(7.5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  //direction: Axis.vertical,
+                                  children: [
+                                    Text(
+                                      "${_user.devices[_tipo][idx - 1]["Name"]}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Marca\n${_user.devices[_tipo][idx - 1]["Numbers"].length != 0 ? "Numeros" : ""}'),
+                                        AnimatedContainer(
+                                          width: change ? 20 : 15,
+                                          height: change ? 20 : 15,
+                                          duration: Duration(milliseconds: 600),
+                                          curve: Curves.easeInOut,
+                                          decoration: BoxDecoration(
+                                            gradient:
+                                                RandGradient.randGradients[
+                                                    idxRandGra[idx - 1]],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xFFFFFFFF),
+                                ),
+                              ),
+                            );
+                          } /*[
+                        Container(
+                          child: ListTile(
                             title: Text(
-                              'Tv',
+                              _titulo,
                               textAlign: TextAlign.left,
                               style: style,
                             ),
                           ),
-                          
-                        ],
-                      ),*/
+                        ),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    _routeToTvPage(_user.devices[_tipo][idx]));
+                              },
+                              child: Container(
+                                width: 200,
+                                height: 80,
+                                alignment: Alignment.centerLeft,
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  bottom: 10,
+                                  right: 10,
+                                  left: 0,
+                                ),
+                                padding: const EdgeInsets.only(
+                                  top: 10.0,
+                                  bottom: 10,
+                                  right: 10,
+                                  left: 0,
+                                ),
+                                child: Row(
+                                  //direction: Axis.horizontal,
+                                  children: <Widget>[
+                                    SvgPicture.asset(
+                                      iconList,
+                                      alignment: Alignment.centerLeft,
+                                      height: 50,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      "${_user.devices[_tipo][idx]["Name"]}\nMarca\n${_user.devices[_tipo][idx]["Numbers"].length != 0 ? "Numeros" : "Nel"}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],*/
+                          ),
+                    ),
+                  ),
                 ),
               ),
               //),

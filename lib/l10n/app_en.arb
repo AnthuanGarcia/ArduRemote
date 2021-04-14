@@ -1,0 +1,25 @@
+{
+    "tagDevs": "Devices",
+    "titleMedia": "Media",
+
+    "msgMenu": "Welcome",
+    "tagFav": "Favorite Channels",
+
+    "labelAdd": "Add",
+    "inputName": "Please enter a name",
+    "feedMsgAdd": "You have not entered a name",
+    "btnForm": "Capture",
+    "capturingDev": "Adding Device",
+
+    "titleFav": "Favorites",
+    "labelFav": "Enter a channel",
+    "tagChannel": "Channels",
+    "btnFav": "Add Channel",
+    "feedMsgFav": "You have not entered a number",
+
+    "titleSche": "Schedule",
+    "checkChan": "Ignition channel",
+    "btnSche": "Schedule date",
+    "feedWrongSche": "Invalid date, enter a valid date",
+    "feedGoodSche": "Date Scheduled"
+}
